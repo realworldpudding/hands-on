@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "pudding-todo"
+version = "0.1.0"
+description = ""
+authors = ["YouNamjoo <younamjoo@puddingcamp.com>"]
+readme = "README.md"
+license = "MIT"
+packages = [
+  { include = "pudding_todo", from = "./" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = {extras = ["all"], version = "^0.111.0"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
