@@ -14,6 +14,25 @@ python = "^3.10"
 fastapi = {extras = ["all"], version = "^0.111.0"}
 
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+pytest-asyncio = "^0.23.7"
+pytest-xdist = "^3.6.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "7.4.2"
+env = ["APP_ENV_NAME=testing"]
+addopts = " --strict-markers --tb=short --asyncio-mode=auto -p no:warnings --doctest-modules"
+python_files = ["tests.py", "test_*.py"]
+rootdir = "./"
+testpaths = ["./tests", "./pudding_todo"]
+pythonpath = ["./pudding_todo"]
+filterwarnings = ["error", "ignore::DeprecationWarning:etcd3.*:"]
+log_cli = true
+log_cli_level = "WARNING"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
