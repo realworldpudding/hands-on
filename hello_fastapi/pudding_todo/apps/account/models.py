@@ -16,4 +16,3 @@ class User(BaseUser, BaseModel):
     @property
     def identity(self) -> str:
         return self.username
-
