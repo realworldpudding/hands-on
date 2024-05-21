@@ -4,11 +4,13 @@ from uuid import uuid4
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from fastapi_users import BaseUserManager
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker
 from sqlalchemy.pool import NullPool
 from sqlmodel import SQLModel
 
 from pudding_todo.app import create_app
+from pudding_todo.authentication import use_user_db, use_user_manager
 from pudding_todo.db import use_session
 from pudding_todo.apps.account.models import User
 
@@ -54,8 +56,17 @@ def client(fastapi_app: FastAPI) -> Generator[TestClient, None, None]:
 
 
 @pytest.fixture()
-async def valid_user(db_session):
-    user = User(username="puddingcamp", password="PuddingCamp2024")
+async def user_manager(db_session):
+    user_db = await anext(use_user_db(db_session))
+    yield await anext(use_user_manager(user_db))
+
+
+@pytest.fixture()
+async def valid_user(db_session, user_manager: BaseUserManager):
+    password = "PuddingCamp2024"
+    hashed_password = user_manager.password_helper.hash(password)
+    
+    user = User(username="puddingcamp", hashed_password=hashed_password)
     db_session.add(user)
     await db_session.commit()
     yield user

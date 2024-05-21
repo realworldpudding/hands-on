@@ -20,8 +20,8 @@ def test_failed_login(password: str, expected_status_code: int, client: TestClie
     assert res.status_code == expected_status_code
 
 
-def test_login_successfully(client: TestClient):
-    payload = {"username": "puddingcamp", "password": "PuddingCamp2024"}
+def test_login_successfully(client: TestClient, valid_user: User):
+    payload = {"username": valid_user.username, "password": "PuddingCamp2024"}
     res = client.post(app.router.url_path_for("login"), json=payload)
     assert res.status_code == status.HTTP_200_OK
 
