@@ -12,12 +12,16 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = {extras = ["all"], version = "^0.111.0"}
+sqlalchemy = "^2.0.30"
+sqlmodel = "^0.0.18"
+greenlet = "^3.0.3"
 
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.0"
 pytest-asyncio = "^0.23.7"
 pytest-xdist = "^3.6.1"
+aiosqlite = "^0.20.0"
 
 [build-system]
 requires = ["poetry-core"]
