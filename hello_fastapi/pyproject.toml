@@ -15,6 +15,7 @@ fastapi = {extras = ["all"], version = "^0.111.0"}
 sqlalchemy = "^2.0.30"
 sqlmodel = "^0.0.18"
 greenlet = "^3.0.3"
+fastapi-users = {extras = ["sqlalchemy"], version = "^13.0.0"}
 
 
 [tool.poetry.group.dev.dependencies]
