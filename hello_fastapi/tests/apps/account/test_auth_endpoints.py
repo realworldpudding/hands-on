@@ -3,19 +3,19 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from pudding_todo.app import app
+from pudding_todo.apps.account.models import User
 
 
 @pytest.mark.parametrize(
-    "username, password, expected_status_code",
+    "password, expected_status_code",
     [
-        ("puddingcamp", "wrongwrong", status.HTTP_401_UNAUTHORIZED),
-        ("puddingcamp", "wrong", status.HTTP_422_UNPROCESSABLE_ENTITY),
-        ("puddingcamp", None, status.HTTP_422_UNPROCESSABLE_ENTITY),
-        (None, "wrongwrong", status.HTTP_422_UNPROCESSABLE_ENTITY),
+        ("wrongwrong", status.HTTP_401_UNAUTHORIZED),
+        ("wrong", status.HTTP_422_UNPROCESSABLE_ENTITY),
+        (None, status.HTTP_422_UNPROCESSABLE_ENTITY),
     ],
 )
-def test_failed_login(username: str, password: str, expected_status_code: int, client: TestClient):
-    payload = {"username": username, "password": password}
+def test_failed_login(password: str, expected_status_code: int, client: TestClient, valid_user: User):
+    payload = {"username": valid_user.username, "password": password}
     res = client.post(app.router.url_path_for("login"), json=payload)
     assert res.status_code == expected_status_code
 

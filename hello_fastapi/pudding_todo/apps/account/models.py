@@ -1,9 +1,11 @@
-from pydantic import BaseModel, SecretStr
+from pydantic import SecretStr
 from starlette.authentication import BaseUser
+from sqlmodel import Field, SQLModel, String
 
-class User(BaseUser, BaseModel):
-    username: str
-    password: SecretStr
+class User(BaseUser, SQLModel, table=True):
+    id: int = Field(primary_key=True, nullable=False, sa_column_kwargs={"autoincrement": True})
+    username: str = Field(unique=True)
+    password: SecretStr = Field(sa_type=String)
 
     @property
     def is_authenticated(self) -> bool:
