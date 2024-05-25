@@ -1,11 +1,10 @@
-from typing import Generator, AsyncGenerator
-from uuid import uuid4
+from typing import Generator
 
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from fastapi_users import BaseUserManager
-from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.pool import NullPool
 from sqlmodel import SQLModel
 
@@ -26,7 +25,6 @@ async def db_session():
 
     async with engine.connect() as conn:
         await conn.begin()
-        await conn.begin_nested()
         await conn.run_sync(SQLModel.metadata.drop_all)
         await conn.run_sync(SQLModel.metadata.create_all)
    
@@ -65,7 +63,7 @@ async def user_manager(db_session):
 async def valid_user(db_session, user_manager: BaseUserManager):
     password = "PuddingCamp2024"
     hashed_password = user_manager.password_helper.hash(password)
-    
+
     user = User(username="puddingcamp", hashed_password=hashed_password)
     db_session.add(user)
     await db_session.commit()
