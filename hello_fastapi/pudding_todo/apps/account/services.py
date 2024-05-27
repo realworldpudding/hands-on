@@ -1,6 +1,5 @@
 from pydantic import SecretStr
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
 from starlette.authentication import UnauthenticatedUser
 from fastapi_users import InvalidPasswordException
 from pudding_todo.authentication import UserManagerDep
@@ -16,9 +15,7 @@ class UserService:
         self.user_manager = user_manager
 
     async def get_by_username(self, username: str) -> User | None:
-        stmt = select(User).where(User.username == username)            
-        result = await self.session.execute(stmt)
-        return result.scalars().one_or_none()
+        return await self.user_manager.get_by_username(username)
 
     async def authenticate(self, username: str, password: SecretStr | str) -> User | UnauthenticatedUser:
         if isinstance(password, SecretStr):
@@ -26,7 +23,7 @@ class UserService:
 
         user = await self.get_by_username(username)
         try:
-            self.user_manager.validate_password(password, user)
+            await self.user_manager.validate_password(password, user)
         except InvalidPasswordException:
             return UnauthenticatedUser()
 

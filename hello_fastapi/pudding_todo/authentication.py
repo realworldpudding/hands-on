@@ -1,5 +1,7 @@
 from typing import AsyncGenerator, Annotated, Optional
 
+from sqlmodel import select
+
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin, FastAPIUsers, InvalidPasswordException
 from fastapi_users.authentication import CookieTransport, JWTStrategy, AuthenticationBackend
@@ -30,6 +32,17 @@ auth_backend = AuthenticationBackend(
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     reset_password_token_secret = SECRET
     verification_token_secret = SECRET
+
+    async def get(self, username: int | str) -> Optional[User]:
+        if isinstance(username, int):
+            return await super().get(username)
+        return await self.get_by_username(username)
+
+    async def get_by_username(self, username: str) -> Optional[User]:
+        statement = select(self.user_db.user_table).where(
+            self.user_db.user_table.username == username,
+        )
+        return await self.user_db._get_user(statement)
 
     async def validate_password(self, password: str, user: User) -> None:
         hashed_password = self.password_helper.hash(password)
