@@ -26,3 +26,34 @@ def test_login_successfully(client: TestClient, valid_user: User):
     assert res.status_code == status.HTTP_204_NO_CONTENT
     assert auth_backend.transport.cookie_name in res.cookies
     assert not not res.cookies[auth_backend.transport.cookie_name]
+
+
+def test_any_user_without_auth(client: TestClient):
+    res = client.get(app.router.url_path_for("any-user"))
+    assert res.status_code == status.HTTP_200_OK
+    data = res.json()
+    assert data == {"detail": "Anonymous"}
+
+
+async def test_any_user_with_auth(client: TestClient, valid_user: User):
+    token = await auth_backend.get_strategy().write_token(valid_user)
+    res = client.get(app.router.url_path_for("any-user"), cookies={auth_backend.transport.cookie_name: token})
+
+    assert res.status_code == status.HTTP_200_OK
+    data = res.json()
+    assert data == {"detail": "Authenticated"}
+
+
+async def test_only_auth_user_without_auth(client: TestClient):
+    res = client.get(app.router.url_path_for("only-auth-user"))
+    
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+async def test_only_auth_user_with_auth(client: TestClient, valid_user: User):
+    token = await auth_backend.get_strategy().write_token(valid_user)
+    res = client.get(app.router.url_path_for("only-auth-user"), cookies={auth_backend.transport.cookie_name: token})
+    
+    assert res.status_code == status.HTTP_200_OK
+    data = res.json()
+    assert data["username"] == valid_user.username

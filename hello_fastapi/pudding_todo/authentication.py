@@ -85,3 +85,9 @@ fastapi_users = FastAPIUsers[User, int](
     use_user_manager,
     [auth_backend],
 )
+
+use_current_active_user = fastapi_users.current_user(active=True, optional=False)
+use_current_active_user_optional = fastapi_users.current_user(active=True, optional=True)
+
+CurrentUserDep = Annotated[User, Depends(use_current_active_user)]
+CurrentUserOptionalDep = Annotated[User, Depends(use_current_active_user_optional)]
