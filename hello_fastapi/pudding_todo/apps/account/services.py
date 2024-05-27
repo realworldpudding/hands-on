@@ -9,9 +9,6 @@ from pudding_todo.db import DbSessionDep
 from .models import User
 
 class UserService:
-    _data = {
-        "puddingcamp": "PuddingCamp2024",
-    }
     session: AsyncSession
 
     def __init__(self, session: DbSessionDep, user_manager: UserManagerDep):
