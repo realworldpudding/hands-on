@@ -12,6 +12,7 @@ class User(BaseUser, SQLModel, table=True):
     )
     username: str = Field(unique=True)
     hashed_password: Optional[str] = Field(nullable=True, default=None, exclude=True)
+    is_active: bool = Field(default=True)
 
     @property
     def is_authenticated(self) -> bool:
