@@ -1,4 +1,4 @@
-from typing import AsyncGenerator, Annotated, Optional
+from typing import AsyncGenerator, Annotated, Optional, Any
 
 from sqlmodel import select
 
@@ -33,10 +33,10 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     reset_password_token_secret = SECRET
     verification_token_secret = SECRET
 
-    async def get(self, username: int | str) -> Optional[User]:
-        if isinstance(username, int):
-            return await super().get(username)
-        return await self.get_by_username(username)
+    async def get(self, username: str | Any) -> Optional[User]:
+        if isinstance(username, str):
+            return await self.get_by_username(username)
+        return await super().get(username)
 
     async def get_by_username(self, username: str) -> Optional[User]:
         statement = select(self.user_db.user_table).where(
