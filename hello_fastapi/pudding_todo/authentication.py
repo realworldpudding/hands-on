@@ -28,6 +28,8 @@ auth_backend = AuthenticationBackend(
     get_strategy=get_jwt_strategy,
 )
 
+AuthBackendDep = Annotated[AuthenticationBackend[User, int], Depends(lambda: auth_backend)]
+
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     reset_password_token_secret = SECRET
