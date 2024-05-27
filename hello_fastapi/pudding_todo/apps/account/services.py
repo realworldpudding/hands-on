@@ -22,6 +22,8 @@ class UserService:
             password = password.get_secret_value()
 
         user = await self.get_by_username(username)
+        if not user:
+            return UnauthenticatedUser()
         try:
             await self.user_manager.validate_password(password, user)
         except InvalidPasswordException:
