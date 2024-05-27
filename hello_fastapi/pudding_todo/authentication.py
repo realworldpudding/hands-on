@@ -45,8 +45,8 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         return await self.user_db._get_user(statement)
 
     async def validate_password(self, password: str, user: User) -> None:
-        hashed_password = self.password_helper.hash(password)
-        if user.hashed_password != hashed_password:
+        result, _ = self.password_helper.verify_and_update(password, user.hashed_password)
+        if not result:
             raise InvalidPasswordException("Password is incorrect.")
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
