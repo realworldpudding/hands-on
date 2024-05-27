@@ -33,8 +33,8 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 
     async def validate_password(self, password: str, user: User) -> None:
         hashed_password = self.password_helper.hash(password)
-        if not self.password_helper.verify(hashed_password, user.password):
-            raise InvalidPasswordException()
+        if user.hashed_password != hashed_password:
+            raise InvalidPasswordException("Password is incorrect.")
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
