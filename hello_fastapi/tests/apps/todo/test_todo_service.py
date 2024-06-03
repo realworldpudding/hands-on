@@ -3,9 +3,9 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from pudding_todo.apps.account.models import User
-from pudding_todo.apps.todo.models import Todo
-from pudding_todo.apps.todo.schemas import TodoCreateSchema
-from pudding_todo.apps.todo.services import TodoService
+from pudding_todo.apps.todo.models import Todo, TodoGroup
+from pudding_todo.apps.todo.schemas import TodoCreateSchema, TodoGroupCreateSchema
+from pudding_todo.apps.todo.services import TodoService, TodoGroupService
 
 
 @pytest.fixture()
@@ -14,9 +14,20 @@ def todo_service(db_session: AsyncSession) -> TodoService:
 
 
 @pytest.fixture()
-def payload(todo_group) -> TodoCreateSchema:
+async def todo_group(db_session: AsyncSession, valid_user: User) -> TodoGroup:
+    service = TodoGroupService(db_session)
+    payload = TodoGroupCreateSchema.model_validate({
+        "name": "Test Group",
+    })
+    group = await service.create(valid_user.id, payload)
+    return group
+
+
+@pytest.fixture()
+def payload(todo_group: TodoGroup) -> TodoCreateSchema:
     return TodoCreateSchema.model_validate({
         "name": "Test Todo",
+        "group_id": todo_group.id,
     })
 
  
