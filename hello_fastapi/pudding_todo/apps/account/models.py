@@ -1,8 +1,11 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from starlette.authentication import BaseUser
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 
+
+if TYPE_CHECKING:
+    from pudding_todo.apps.todo.models import Todo, TodoGroup
 
 class User(BaseUser, SQLModel, table=True):
     id: int = Field(
@@ -13,6 +16,11 @@ class User(BaseUser, SQLModel, table=True):
     username: str = Field(unique=True)
     hashed_password: Optional[str] = Field(nullable=True, default=None, exclude=True)
     is_active: bool = Field(default=True)
+
+    todos: list["Todo"] = Relationship(
+        back_populates="user",
+        sa_relationship_kwargs={"lazy": "selectin"},
+    )
 
     @property
     def is_authenticated(self) -> bool:
