@@ -21,6 +21,10 @@ class User(BaseUser, SQLModel, table=True):
         back_populates="user",
         sa_relationship_kwargs={"lazy": "selectin"},
     )
+    todo_groups: list["TodoGroup"] = Relationship(
+        back_populates="user",
+        sa_relationship_kwargs={"lazy": "selectin"},
+    )
 
     @property
     def is_authenticated(self) -> bool:
