@@ -17,10 +17,6 @@ class User(BaseUser, SQLModel, table=True):
     hashed_password: Optional[str] = Field(nullable=True, default=None, exclude=True)
     is_active: bool = Field(default=True)
 
-    todos: list["Todo"] = Relationship(
-        back_populates="user",
-        sa_relationship_kwargs={"lazy": "selectin"},
-    )
     todo_groups: list["TodoGroup"] = Relationship(
         back_populates="user",
         sa_relationship_kwargs={"lazy": "selectin"},

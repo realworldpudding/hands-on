@@ -52,11 +52,6 @@ class Todo(SQLModel, table=True):
     name: str
     description: Optional[str] = Field(nullable=True, default=None, sa_type=Text)
 
-    user_id: int = Field(nullable=False, foreign_key="user.id")
-    user: "User" = Relationship(
-        back_populates="todos",
-        sa_relationship_kwargs={"lazy": "selectin"},
-    )
     group_id: int = Field(nullable=False, foreign_key=f"{TodoGroup.__tablename__}.id")
     group: TodoGroup = Relationship(
         back_populates="todos",
