@@ -2,7 +2,7 @@ from typing import Optional, TYPE_CHECKING
 from datetime import datetime, UTC
 
 from pydantic import AwareDatetime
-from sqlmodel import Field, SQLModel, Text, func, Relationship
+from sqlmodel import Field, SQLModel, Text, func, Relationship, UniqueConstraint
 from sqlmodel.main import declared_attr
 from sqlalchemy_utc import UtcDateTime
 
@@ -16,7 +16,7 @@ class TodoGroup(SQLModel, table=True):
         nullable=False,
         sa_column_kwargs={"autoincrement": True},
     )
-    name: str = Field(unique=True)
+    name: str = Field()
 
     user_id: int = Field(nullable=False, foreign_key="user.id")
     user: "User" = Relationship(
@@ -33,6 +33,14 @@ class TodoGroup(SQLModel, table=True):
     @classmethod
     def __tablename__(cls) -> str:
         return "todo_group"
+
+    @declared_attr
+    @classmethod
+    def __table_args__(cls) -> tuple:
+        return (
+            UniqueConstraint("user_id", "name", name="unique_user_group_name"),
+        )
+
 
 
 class Todo(SQLModel, table=True):
