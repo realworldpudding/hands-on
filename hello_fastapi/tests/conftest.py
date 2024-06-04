@@ -68,3 +68,14 @@ async def valid_user(db_session, user_manager: BaseUserManager):
     db_session.add(user)
     await db_session.commit()
     yield user
+
+
+@pytest.fixture()
+async def valid_user2(db_session, user_manager: BaseUserManager):
+    password = "PuddingCamp2024"
+    hashed_password = user_manager.password_helper.hash(password)
+
+    user = User(username="puddingcamp2", hashed_password=hashed_password)
+    db_session.add(user)
+    await db_session.commit()
+    yield user
