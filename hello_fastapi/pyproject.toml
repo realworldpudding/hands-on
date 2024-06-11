@@ -18,6 +18,7 @@ greenlet = "^3.0.3"
 fastapi-users = {extras = ["sqlalchemy"], version = "^13.0.0"}
 sqlalchemy-utc = "^0.14.0"
 sqladmin = {extras = ["full"], version = "^0.17.0"}
+alembic = "^1.13.1"
 
 
 [tool.poetry.group.dev.dependencies]
