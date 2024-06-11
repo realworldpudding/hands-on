@@ -11,7 +11,6 @@ from pudding_todo.apps.todo.models import TodoGroup
 from pudding_todo.apps.todo.schemas import TodoCreateSchema, TodoGroupCreateSchema
 from pudding_todo.apps.todo.services import TodoGroupService
 from pudding_todo.authentication import auth_backend
-from tests.apps.todo.test_todo_group_service import todo_group_service
 
 
 @pytest.fixture()
