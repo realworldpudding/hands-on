@@ -6,6 +6,7 @@ from pudding_todo.apps.account.router import router as account_router
 from pudding_todo.apps.common.router import router as common_router
 from pudding_todo.apps.todo.router import router as todo_router
 
+from .admin_app import init_admin
 from .authentication import fastapi_users, auth_backend
 from .db import engine
 
@@ -31,3 +32,5 @@ def create_app() -> FastAPI:
     return app
 
 app = create_app()
+
+init_admin(app, engine)
