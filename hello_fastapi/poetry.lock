@@ -1340,6 +1340,29 @@ files = [
 ]
 
 [[package]]
+name = "sqladmin"
+version = "0.17.0"
+description = "SQLAlchemy admin for FastAPI and Starlette"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "sqladmin-0.17.0-py3-none-any.whl", hash = "sha256:bc1cc8d6a07b815d900d730185cecd3053b745857c444ddee81dbfa15588b1b9"},
+    {file = "sqladmin-0.17.0.tar.gz", hash = "sha256:d23bfce1527495550084ed50f49af3c38fd988704643429c78b62d9f93f8677a"},
+]
+
+[package.dependencies]
+itsdangerous = {version = "*", optional = true, markers = "extra == \"full\""}
+jinja2 = "*"
+python-multipart = "*"
+sqlalchemy = ">=1.4"
+starlette = "*"
+wtforms = ">=3.1,<3.2"
+
+[package.extras]
+full = ["itsdangerous"]
+
+[[package]]
 name = "sqlalchemy"
 version = "2.0.30"
 description = "Database Abstraction Library"
@@ -1849,7 +1872,25 @@ files = [
     {file = "websockets-12.0.tar.gz", hash = "sha256:81df9cbcbb6c260de1e007e58c011bfebe2dafc8435107b0537f393dd38c8b1b"},
 ]
 
+[[package]]
+name = "wtforms"
+version = "3.1.2"
+description = "Form validation and rendering for Python web development."
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "wtforms-3.1.2-py3-none-any.whl", hash = "sha256:bf831c042829c8cdbad74c27575098d541d039b1faa74c771545ecac916f2c07"},
+    {file = "wtforms-3.1.2.tar.gz", hash = "sha256:f8d76180d7239c94c6322f7990ae1216dae3659b7aa1cee94b6318bdffb474b9"},
+]
+
+[package.dependencies]
+markupsafe = "*"
+
+[package.extras]
+email = ["email-validator"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "fd5a97d3a7fb43e1a33168855d20286284bb4b310200bb9c58eda401cdbcd1e0"
+content-hash = "38f106cc3d40f595a9240fd4606643e587d92f2dd79bd1688d837625612f686b"
