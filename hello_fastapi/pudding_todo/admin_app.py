@@ -3,11 +3,12 @@ from sqladmin import Admin
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from .apps.account.admin import UserAdmin
-from .apps.todo.admin import TodoGroupAdmin
+from .apps.todo.admin import TodoGroupAdmin, TodoAdmin
 
 def add_views(admin: Admin):
     admin.add_view(UserAdmin)
     admin.add_view(TodoGroupAdmin)
+    admin.add_view(TodoAdmin)
 
 
 def init_admin(

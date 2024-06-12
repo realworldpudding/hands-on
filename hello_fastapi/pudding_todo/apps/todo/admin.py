@@ -31,3 +31,40 @@ class TodoGroupAdmin(ModelView, model=TodoGroup):
             "order_by": "id",
         },
     }
+
+
+class TodoAdmin(ModelView, model=Todo):
+    category = "Todo"
+    name = "할 일"
+    name_plural = "할 일들"
+    column_list = (
+        Todo.id,
+        Todo.name,
+        Todo.group,
+        Todo.created_at,
+        Todo.updated_at,
+        Todo.duedate_at,
+        Todo.completed_at,
+        Todo.cancelled_at,
+    )
+    form_columns = (
+        Todo.name,
+        Todo.group,
+        Todo.description,
+        Todo.duedate_at,
+        Todo.completed_at,
+        Todo.cancelled_at,
+    )
+    column_searchable_list = (
+        Todo.id,
+        Todo.name,
+    )
+    column_sortable_list = (Todo.id, Todo.name, Todo.group,)
+    column_default_sort = (Todo.id, True)
+
+    form_ajax_refs: ClassVar = {
+        "group": {
+            "fields": ("id", "name"),
+            "order_by": "id",
+        },
+    }
