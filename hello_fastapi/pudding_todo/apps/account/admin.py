@@ -1,3 +1,4 @@
+from typing import ClassVar
 from sqladmin import ModelView
 from starlette.requests import Request
 
@@ -17,6 +18,13 @@ class UserAdmin(ModelView, model=User):
     column_sortable_list = (User.id, User.username,)
     column_default_sort = (User.id, True)
     page_size = 50
+
+    form_ajax_refs: ClassVar = {
+        "todo_groups": {
+            "fields": ("id", "name"),
+            "order_by": "id",
+        },
+    }
 
     async def on_model_change(
         self, data: dict, model: User, is_created: bool, request: Request
