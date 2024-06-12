@@ -1,6 +1,8 @@
+from datetime import datetime, UTC
 from typing import ClassVar
 
 from sqladmin import ModelView
+from starlette.requests import Request
 
 from .models import TodoGroup, Todo
 
@@ -37,6 +39,15 @@ class TodoAdmin(ModelView, model=Todo):
     category = "Todo"
     name = "할 일"
     name_plural = "할 일들"
+    column_labels = {
+        Todo.name: "할 일",
+        Todo.group: "그룹",
+        Todo.created_at: "생성일",
+        Todo.updated_at: "수정일",
+        Todo.duedate_at: "마감일",
+        Todo.completed_at: "완료일",
+        Todo.cancelled_at: "취소일",
+    }
     column_list = (
         Todo.id,
         Todo.name,
@@ -55,6 +66,9 @@ class TodoAdmin(ModelView, model=Todo):
         Todo.completed_at,
         Todo.cancelled_at,
     )
+    column_type_formatters: ClassVar = {
+        datetime: lambda v: v.strftime("%Y-%m-%d %H:%M:%S"),
+    }
     column_searchable_list = (
         Todo.id,
         Todo.name,
@@ -68,3 +82,13 @@ class TodoAdmin(ModelView, model=Todo):
             "order_by": "id",
         },
     }
+
+    async def on_model_change(
+        self, data: dict, model: Todo, is_created: bool, request: Request
+    ) -> None:
+        for key, value in data.items():
+            if not isinstance(value, datetime):
+                continue
+            if value.utcoffset() is not None:
+                continue
+            data[key] = value.astimezone(UTC)
