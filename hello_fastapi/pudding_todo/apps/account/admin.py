@@ -1,18 +1,12 @@
 from sqladmin import ModelView
+from starlette.requests import Request
 
+from pudding_todo.authentication import password_helper
 from .models import User
 
 
 class UserAdmin(ModelView, model=User):
-    category = "Account"
-    name = "사용자"
-    name_plural = "사용자"
     column_list = (
-        User.id,
-        User.username,
-        User.is_active,
-    )
-    form_columns = (
         User.id,
         User.username,
         User.is_active,
@@ -23,10 +17,10 @@ class UserAdmin(ModelView, model=User):
     column_sortable_list = (User.id, User.username,)
     column_default_sort = (User.id, True)
     page_size = 50
-    column_details_list = (
-        User.id,
-        User.username,
-        User.is_active,
-    )
 
-
+    async def on_model_change(
+        self, data: dict, model: User, is_created: bool, request: Request
+    ) -> None:
+        if _password := data.get("hashed_password"):
+            if _password != model.hashed_password:
+                data["hashed_password"] = password_helper.hash(_password)
