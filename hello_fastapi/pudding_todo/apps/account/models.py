@@ -21,6 +21,9 @@ class User(BaseUser, SQLModel, table=True):
         back_populates="user",
         sa_relationship_kwargs={"lazy": "selectin"},
     )
+    
+    def __str__(self) -> str:
+        return self.username
 
     @property
     def is_authenticated(self) -> bool:

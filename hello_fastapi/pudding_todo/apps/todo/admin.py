@@ -15,7 +15,6 @@ class TodoGroupAdmin(ModelView, model=TodoGroup):
         TodoGroup.user,
     )
     form_columns = (
-        TodoGroup.id,
         TodoGroup.name,
         TodoGroup.user,
     )
