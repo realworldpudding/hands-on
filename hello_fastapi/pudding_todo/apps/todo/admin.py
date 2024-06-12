@@ -47,10 +47,12 @@ class TodoAdmin(ModelView, model=Todo):
         Todo.duedate_at: "마감일",
         Todo.completed_at: "완료일",
         Todo.cancelled_at: "취소일",
+        "group.user.username": "사용자",
     }
     column_list = (
         Todo.id,
         Todo.name,
+        "group.user.username",
         Todo.group,
         Todo.created_at,
         Todo.updated_at,
@@ -66,6 +68,9 @@ class TodoAdmin(ModelView, model=Todo):
         Todo.completed_at,
         Todo.cancelled_at,
     )
+    column_formatters: ClassVar = {
+        Todo.group: lambda m, _: m.group.name,
+    }
     column_type_formatters: ClassVar = {
         datetime: lambda v: v.strftime("%Y-%m-%d %H:%M:%S"),
     }
