@@ -1,6 +1,5 @@
 from typing import Optional, TYPE_CHECKING
 from datetime import datetime, UTC
-
 from pydantic import AwareDatetime
 from sqlmodel import Field, SQLModel, Text, func, Relationship, UniqueConstraint
 from sqlmodel.main import declared_attr

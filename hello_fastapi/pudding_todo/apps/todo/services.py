@@ -1,3 +1,4 @@
+from typing import Optional, Sequence
 from pudding_todo.db import DbSessionDep
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
@@ -39,4 +40,24 @@ class TodoService:
         self.session.add(todo)
         await self.session.commit()
         return todo
+
+    async def findall(
+            self,
+            user_id: int,
+            *,
+            group_id: Optional[int] = None,
+            offset: int = 0,
+            limit: int = 10,
+        ) -> Sequence[Todo]:
+        stmt = (
+            select(Todo)
+            .join(TodoGroup)
+            .where(TodoGroup.user_id == user_id)
+            .offset(offset)
+            .limit(limit)
+        )
+        if group_id:
+            stmt = stmt.where(Todo.group_id == group_id)
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
 
