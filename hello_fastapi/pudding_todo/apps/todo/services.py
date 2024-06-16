@@ -28,6 +28,11 @@ class TodoGroupService:
         result = await self.session.execute(stmt)
         return result.one_or_none()
 
+    async def get_by_id(self, group_id: int) -> TodoGroup | None:
+        stmt = select(TodoGroup).where(TodoGroup.id == group_id)
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()
+
 
 class TodoService:
     session: AsyncSession
