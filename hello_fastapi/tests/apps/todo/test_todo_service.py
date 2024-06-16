@@ -9,17 +9,21 @@ from pudding_todo.apps.todo.services import TodoService, TodoGroupService
 
 
 @pytest.fixture()
+def todo_group_service(db_session: AsyncSession) -> TodoService:
+    return TodoGroupService(db_session)
+
+
+@pytest.fixture()
 def todo_service(db_session: AsyncSession) -> TodoService:
     return TodoService(db_session)
 
 
 @pytest.fixture()
-async def todo_group(db_session: AsyncSession, valid_user: User) -> TodoGroup:
-    service = TodoGroupService(db_session)
+async def todo_group(todo_group_service: TodoGroupService, valid_user: User) -> TodoGroup:
     payload = TodoGroupCreateSchema.model_validate({
         "name": "Test Group",
     })
-    group = await service.create(valid_user.id, payload)
+    group = await todo_group_service.create(valid_user.id, payload)
     return group
 
 
@@ -33,8 +37,8 @@ def payload(todo_group: TodoGroup) -> TodoCreateSchema:
  
 
 async def test_create(payload: TodoCreateSchema, todo_service: TodoService, valid_user: User):
-    todo = await todo_service.create(valid_user.id, payload)
+    todo = await todo_service.create(payload)
     
     assert isinstance(todo, Todo)
     assert todo.name == payload.name
-    assert todo.user.id == valid_user.id
+    assert todo.group.user.id == valid_user.id
