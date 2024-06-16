@@ -31,3 +31,20 @@ async def test_cannot_create_duplicated_name(payload: TodoGroupCreateSchema, tod
     await todo_group_service.create(valid_user.id, payload)
     with pytest.raises(DuplicatedError):
         await todo_group_service.create(valid_user.id, payload)
+
+
+async def test_findall_by_user_id(
+        payload: TodoGroupCreateSchema,
+        todo_group_service: TodoGroupService,
+        valid_user: User,
+        valid_user2: User,
+    ) -> None:
+    todo_group1 = await todo_group_service.create(valid_user.id, payload)
+    todo_group2 = await todo_group_service.create(valid_user2.id, payload)
+
+    groups = await todo_group_service.findall(valid_user.id)
+    id_set = frozenset(group.id for group in groups)
+
+    assert len(groups) == 1
+    assert todo_group1.id in id_set
+    assert todo_group2.id not in id_set

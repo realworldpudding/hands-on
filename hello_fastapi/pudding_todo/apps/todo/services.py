@@ -33,6 +33,11 @@ class TodoGroupService:
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
+    async def findall(self, user_id: int) -> Sequence[TodoGroup]:
+        stmt = select(TodoGroup).where(TodoGroup.user_id == user_id)
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
+
 
 class TodoService:
     session: AsyncSession
