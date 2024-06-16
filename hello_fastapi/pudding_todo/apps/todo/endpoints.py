@@ -6,11 +6,11 @@ from .deps import TodoGroupServiceDep, TodoServiceDep
 from .models import Todo
 from .schemas import TodoCreateSchema
 
-router = APIRouter(prefix="/todos")
+router = APIRouter()
 
 
 @router.post(
-    "/",
+    "/todos",
     response_model=Todo,
     name="create-todo",
     status_code=status.HTTP_201_CREATED,
@@ -26,3 +26,16 @@ async def create_todo(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group not found")
     todo = await service.create(payload)
     return todo
+
+
+@router.get("/todo-groups", name="list-todo-group")
+async def list_todo_group(
+    user: CurrentUserDep,
+    service: TodoGroupServiceDep,
+) -> dict:
+    groups = await service.findall(user.id)
+    ctx = {
+        "groups": groups,
+    }
+
+    return ctx
