@@ -1,5 +1,14 @@
 {% extends "layout.jinja2" %}
 
 {% block content %}
-    Hello {{ user.username }}
+    <h1>{{ user.username }}님의 할 일 그룹</h1>
+
+    <div>
+    {% for group in groups %}
+        <div>
+            <h2>{{ group.name }}</h2>
+            <span>({{ group.todos|length }})</span>
+        </div>        
+    {% endfor %}
+    </div>
 {% endblock %}
