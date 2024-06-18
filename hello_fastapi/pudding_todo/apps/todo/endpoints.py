@@ -38,6 +38,7 @@ async def list_todo_group(
     groups = await service.findall(user.id)
     ctx = {
         "groups": groups,
+        "user": user,
     }
 
     return ctx

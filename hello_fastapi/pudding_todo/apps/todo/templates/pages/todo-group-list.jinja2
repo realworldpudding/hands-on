@@ -1,1 +1,5 @@
-hello
+{% extends "layout.jinja2" %}
+
+{% block content %}
+    Hello {{ user.username }}
+{% endblock %}
