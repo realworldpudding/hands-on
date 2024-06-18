@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Response
 
 from pudding_todo.authentication import AuthBackendDep, CurrentUserDep, CurrentUserOptionalDep
+from pudding_todo.templates import tpl
 
 from .models import User
 from .schemas import LoginSchema
@@ -18,6 +19,12 @@ async def login(payload: LoginSchema, service: UserServiceDep, auth_backend: Aut
     strategy = auth_backend.get_strategy()
     response = await auth_backend.login(strategy, user)
     return response
+
+
+@router.get("/login", name="login-page")
+@tpl.page("pages/login.jinja2")
+async def login_page() -> dict:
+    return {}
 
 
 @router.get("/only-auth-user", name="only-auth-user", response_model=User)
