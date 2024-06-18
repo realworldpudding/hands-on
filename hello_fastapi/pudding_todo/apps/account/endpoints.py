@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Response
+from fastapi import APIRouter, HTTPException, status, Response, Request
 
 from pudding_todo.authentication import AuthBackendDep, CurrentUserDep, CurrentUserOptionalDep
 from pudding_todo.templates import tpl
@@ -11,13 +11,19 @@ router = APIRouter()
 
 
 @router.post("/login", name="login")
-async def login(payload: LoginSchema, service: UserServiceDep, auth_backend: AuthBackendDep) -> Response:
+async def login(
+        request: Request,
+        payload: LoginSchema,
+        service: UserServiceDep,
+        auth_backend: AuthBackendDep,
+    ) -> Response:
     user = await service.authenticate(payload.username, payload.password)
     if not user.is_authenticated:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     
     strategy = auth_backend.get_strategy()
     response = await auth_backend.login(strategy, user)
+    response.headers["HX-Redirect"] = str(request.url_for("list-todo-group-page"))
     return response
 
 

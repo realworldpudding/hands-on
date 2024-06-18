@@ -2,8 +2,10 @@
 
 {% block content %}
 <form
-    method="post"
-    action="{{ url_for('login') }}"    
+    hx-post="{{ url_for('login') }}"
+    hx-trigger="submit"
+    hx-swap="none"
+    hx-ext="json-enc"
 >
     <div class="form-group">
         <label for="username">아이디</label>

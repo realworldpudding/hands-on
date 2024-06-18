@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 
 from pudding_todo.authentication import CurrentUserDep
+from pudding_todo.templates import tpl
 
 from .deps import TodoGroupServiceDep, TodoServiceDep
 from .models import Todo
@@ -28,7 +29,8 @@ async def create_todo(
     return todo
 
 
-@router.get("/todo-groups", name="list-todo-group")
+@router.get("/todo-groups", name="list-todo-group-page")
+@tpl.page("pages/todo-group-list.jinja2")
 async def list_todo_group(
     user: CurrentUserDep,
     service: TodoGroupServiceDep,
