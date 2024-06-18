@@ -2,7 +2,7 @@ from typing import Optional, Sequence
 from pudding_todo.db import DbSessionDep
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from sqlmodel import select
+from sqlmodel import select, func
 
 from pudding_todo.exceptions import DuplicatedError
 from .models import Todo, TodoGroup
@@ -70,4 +70,14 @@ class TodoService:
             stmt = stmt.where(Todo.group_id == group_id)
         result = await self.session.execute(stmt)
         return result.scalars().all()
+
+    async def count_by_group_id(self, user_id: int, group_id: int) -> int:
+        stmt = (
+            select(func.count())
+            .select_from(Todo)
+            .where(Todo.group.has(TodoGroup.user_id == user_id))
+            .where(Todo.group_id == group_id)
+        )
+        result = await self.session.execute(stmt)
+        return result.scalar_one() or 0
 

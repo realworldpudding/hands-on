@@ -7,7 +7,11 @@
     {% for group in groups %}
         <div>
             <h2>{{ group.name }}</h2>
-            <span>({{ group.todos|length }})</span>
+
+            <div
+                hx-get="{{ url_for('partial-todo-group-todos-count', pk=group.id) }}"
+                hx-trigger="load delay:250ms"
+            ></div>
         </div>        
     {% endfor %}
     </div>

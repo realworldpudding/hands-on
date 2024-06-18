@@ -42,3 +42,17 @@ async def list_todo_group(
     }
 
     return ctx
+
+
+@router.get("/~/todo-group-todo-count/{pk}", name="partial-todo-group-todos-count")
+@tpl.hx("partial/todo-group-todos-count.jinja2", no_data=True)
+async def count_todo_group_todos(
+    pk: int,
+    user: CurrentUserDep,
+    service: TodoServiceDep,
+) -> dict:
+    count = await service.count_by_group_id(user.id, pk)
+    ctx = {
+        "count_all": count,
+    }
+    return ctx
