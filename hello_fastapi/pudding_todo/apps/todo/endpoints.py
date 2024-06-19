@@ -56,3 +56,24 @@ async def count_todo_group_todos(
         "count_all": count,
     }
     return ctx
+
+
+@router.get("/todo-groups/{pk}/todos", name="list-todo-page")
+@tpl.page("pages/todo-list.jinja2")
+async def list_todo(
+    pk: int,
+    user: CurrentUserDep,
+    service: TodoServiceDep,
+    todo_group_service: TodoGroupServiceDep,
+) -> dict:
+    todo_group = await todo_group_service.get_users_group_by_id(user.id, pk)
+    if not todo_group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group not found")
+    
+    todos = await service.findall(user.id, group_id=pk)
+    ctx = {
+        "todo_group": todo_group,
+        "todos": todos,
+    }
+
+    return ctx

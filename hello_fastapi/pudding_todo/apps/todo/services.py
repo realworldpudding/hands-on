@@ -61,7 +61,7 @@ class TodoService:
         ) -> Sequence[Todo]:
         stmt = (
             select(Todo)
-            .join(TodoGroup)
+            # .join(TodoGroup)
             .where(TodoGroup.user_id == user_id)
             .offset(offset)
             .limit(limit)

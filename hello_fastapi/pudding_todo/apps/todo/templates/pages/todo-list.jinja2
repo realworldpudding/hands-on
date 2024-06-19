@@ -1,0 +1,49 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+    <div>
+        <h1>{{ todo_group.name }} 그룹함</h1>
+        {% for todo in todos %}
+        <div>
+            <h2>{{ todo.name }}</h2>
+
+            <div>{{ todo.description or "" }}</div>
+
+            <ul>
+                <li>
+                    <span>생성일시</span>
+                    <span>{{ todo.created_at.strftime('%Y-%m-%d %H:%I') }}</span>
+                </li>
+                <li>
+                    <span>수정일시</span>
+                    <span>{{ todo.updated_at.strftime('%Y-%m-%d %H:%I') }}</span>
+                </li>
+                <li>
+                    <span>마감일시</span>
+                    {% if todo.duedate_at %}
+                    <span>{{ todo.duedate_at.strftime('%Y-%m-%d %H:%I') }}</span>
+                    {% else %}
+                    <span>없음</span>
+                    {% endif %}
+                </li>
+                <li>
+                    {% if todo.completed_at %}
+                    <span>완료일시</span>
+                    <span>{{ todo.completed_at.strftime('%Y-%m-%d %H:%I') }}</span>
+                    <button type="button">완료 취소하기</button>
+                    {% else %}
+                    <button type="button">완료하기</button>
+                    <button type="button">작업 취소하기</button>
+                    {% endif %}
+                </li>
+                {% if todo.cancelled_at %}
+                <li>
+                    <span>취소일시</span>
+                    <span>{{ todo.cancelled_at.strftime('%Y-%m-%d %H:%I') }}</span>
+                </li>
+                {% endif %}
+            </ul>
+        </div>        
+        {% endfor %}
+    </div>
+{% endblock %}
