@@ -61,7 +61,7 @@ class TodoService:
         ) -> Sequence[Todo]:
         stmt = (
             select(Todo)
-            # .join(TodoGroup)
+            .join(TodoGroup)
             .where(TodoGroup.user_id == user_id)
             .offset(offset)
             .limit(limit)
@@ -69,7 +69,7 @@ class TodoService:
         if group_id:
             stmt = stmt.where(Todo.group_id == group_id)
         result = await self.session.execute(stmt)
-        return result.scalars().all()
+        return result.unique().scalars().all()
 
     async def count_by_group_id(self, user_id: int, group_id: int) -> int:
         stmt = (
