@@ -1,12 +1,17 @@
+from datetime import datetime
 from typing import Optional, Sequence
-from pudding_todo.db import DbSessionDep
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import select, func
 
+from pudding_todo.db import DbSessionDep
 from pudding_todo.exceptions import DuplicatedError
+
+from ...exceptions import PermissionDenidedError
 from .models import Todo, TodoGroup
 from .schemas import TodoGroupCreateSchema, TodoCreateSchema
+
 
 class TodoGroupService:
     session: AsyncSession
@@ -71,6 +76,11 @@ class TodoService:
         result = await self.session.execute(stmt)
         return result.unique().scalars().all()
 
+    async def get_by_id(self, todo_id: int) -> Todo | None:
+        stmt = select(Todo).where(Todo.id == todo_id)
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()
+
     async def count_by_group_id(self, user_id: int, group_id: int) -> int:
         stmt = (
             select(func.count())
@@ -80,4 +90,14 @@ class TodoService:
         )
         result = await self.session.execute(stmt)
         return result.scalar_one() or 0
-
+    
+    async def set_completed_at(self, user_id: int, todo: Todo, when: Optional[datetime] = None) -> Todo:
+        if todo.group.user_id != user_id:
+            raise PermissionDenidedError()
+        
+        todo.cancelled_at = None
+        todo.completed_at = when
+        self.session.add(todo)
+        await self.session.commit()
+        return todo
+   

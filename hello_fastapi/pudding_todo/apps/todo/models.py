@@ -89,3 +89,7 @@ class Todo(SQLModel, table=True):
         nullable=True,
         sa_type=UtcDateTime,
     )
+
+    @property
+    def is_completed(self) -> bool:
+        return self.completed_at is not None

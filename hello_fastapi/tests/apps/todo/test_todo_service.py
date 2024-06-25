@@ -1,7 +1,9 @@
 import pytest
+from datetime import datetime, UTC
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from pudding_todo.exceptions import PermissionDenidedError
 from pudding_todo.apps.account.models import User
 from pudding_todo.apps.todo.models import Todo, TodoGroup
 from pudding_todo.apps.todo.schemas import TodoCreateSchema, TodoGroupCreateSchema
@@ -88,3 +90,42 @@ async def test_findall_by_group_id(
     assert all(todo.group.id == todo_group.id for todo in todos)
     assert expected_id_set
     assert id_set == expected_id_set
+
+
+@pytest.fixture()
+async def not_completed_todo(todo_group: TodoGroup, todo_service: TodoService):
+    payload = TodoCreateSchema.model_validate({
+        "name": f"Not completed Todo for {todo_group.name}",
+        "group_id": todo_group.id,
+    })
+    return await todo_service.create(payload)
+
+
+async def test_set_completed_at(
+    valid_user: User,
+    not_completed_todo: Todo,
+    todo_service: TodoService,
+) -> None:
+    user = valid_user
+    todo = not_completed_todo
+    now = datetime.now(UTC)
+
+    await todo_service.set_completed_at(user.id, todo)
+    todo = await todo_service.get_by_id(todo.id)
+    assert todo.is_completed is False
+    
+    await todo_service.set_completed_at(user.id, todo, now)
+    todo = await todo_service.get_by_id(todo.id)
+    assert todo.is_completed
+
+
+async def test_cannot_set_others_completed_at(
+    valid_user2: User,
+    not_completed_todo: Todo,
+    todo_service: TodoService,
+) -> None:
+    user = valid_user2
+    todo = not_completed_todo
+
+    with pytest.raises(PermissionDenidedError):
+        await todo_service.set_completed_at(user.id, todo)
