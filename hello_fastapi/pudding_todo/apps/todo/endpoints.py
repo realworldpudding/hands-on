@@ -1,3 +1,5 @@
+from datetime import datetime, UTC
+
 from fastapi import APIRouter, status, HTTPException
 
 from pudding_todo.authentication import CurrentUserDep
@@ -76,4 +78,47 @@ async def list_todo(
         "todos": todos,
     }
 
+    return ctx
+
+
+@router.post("/todos/{pk}/completed", name="set-todo-completed")
+@tpl.hx("partial/todo-detail.jinja2", no_data=True)
+async def set_todo_to_completed(
+    pk: int,
+    user: CurrentUserDep,
+    service: TodoServiceDep,
+) -> dict:
+    todo = await service.get_by_id(pk)
+    if not todo:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Todo not found",
+        )
+
+    now = datetime.now(UTC)    
+    todo = await service.set_completed_at(user.id, todo, now)
+    ctx = {
+        "todo": todo,
+    }
+    return ctx
+
+
+@router.delete("/todos/{pk}/completed", name="unset-todo-completed")
+@tpl.hx("partial/todo-detail.jinja2", no_data=True)
+async def unset_todo_to_completed(
+    pk: int,
+    user: CurrentUserDep,
+    service: TodoServiceDep,
+) -> dict:
+    todo = await service.get_by_id(pk)
+    if not todo:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Todo not found",
+        )
+    
+    todo = await service.set_completed_at(user.id, todo)
+    ctx = {
+        "todo": todo,
+    }
     return ctx

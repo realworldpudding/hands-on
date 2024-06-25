@@ -92,15 +92,6 @@ async def test_findall_by_group_id(
     assert id_set == expected_id_set
 
 
-@pytest.fixture()
-async def not_completed_todo(todo_group: TodoGroup, todo_service: TodoService):
-    payload = TodoCreateSchema.model_validate({
-        "name": f"Not completed Todo for {todo_group.name}",
-        "group_id": todo_group.id,
-    })
-    return await todo_service.create(payload)
-
-
 async def test_set_completed_at(
     valid_user: User,
     not_completed_todo: Todo,

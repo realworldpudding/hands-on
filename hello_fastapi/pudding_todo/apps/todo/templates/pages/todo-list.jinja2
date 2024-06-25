@@ -6,7 +6,7 @@
     <div>
         <h1>{{ todo_group.name }} 그룹함</h1>
         {% for todo in todos %}
-            {{ todo_detail.render(todo) }}
+            {{ todo_detail.render(todo, request.url_for) }}
         {% endfor %}
     </div>
 {% endblock %}

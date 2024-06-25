@@ -95,9 +95,11 @@ class TodoService:
         if todo.group.user_id != user_id:
             raise PermissionDenidedError()
         
-        todo.cancelled_at = None
+        if when:
+            todo.cancelled_at = None
         todo.completed_at = when
         self.session.add(todo)
         await self.session.commit()
+        await self.session.refresh(todo)
         return todo
    

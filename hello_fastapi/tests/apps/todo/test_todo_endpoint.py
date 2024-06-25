@@ -7,9 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from pudding_todo.app import app
 from pudding_todo.apps.account.models import User
-from pudding_todo.apps.todo.models import TodoGroup
+from pudding_todo.apps.todo.models import TodoGroup, Todo
 from pudding_todo.apps.todo.schemas import TodoCreateSchema, TodoGroupCreateSchema
-from pudding_todo.apps.todo.services import TodoGroupService
+from pudding_todo.apps.todo.services import TodoGroupService, TodoService
 from pudding_todo.authentication import auth_backend
 
 
@@ -75,3 +75,41 @@ async def test_cannot_create_todo_with_others_group(
 
     res = client.post(url, json=payload, cookies=cookies)
     assert res.status_code == status.HTTP_404_NOT_FOUND
+
+
+async def test_set_todo_to_completed(
+        client: TestClient,
+        valid_user: User,
+        not_completed_todo: Todo,
+        todo_service: TodoService,
+    ):
+    todo = not_completed_todo
+    url = app.router.url_path_for("set-todo-completed", pk=todo.id)
+    token = await auth_backend.get_strategy().write_token(valid_user)
+    cookies = {auth_backend.transport.cookie_name: token}
+    headers = {"HX-Request": "true"}
+
+    res = client.post(url, cookies=cookies, headers=headers)
+    assert res.status_code == status.HTTP_200_OK
+
+    todo = await todo_service.get_by_id(todo.id)
+    assert todo.is_completed
+
+
+async def test_unset_todo_to_completed(
+        client: TestClient,
+        valid_user: User,
+        not_completed_todo: Todo,
+        todo_service: TodoService,
+    ):
+    todo = not_completed_todo
+    url = app.router.url_path_for("unset-todo-completed", pk=todo.id)
+    token = await auth_backend.get_strategy().write_token(valid_user)
+    cookies = {auth_backend.transport.cookie_name: token}
+    headers = {"HX-Request": "true"}
+
+    res = client.delete(url, cookies=cookies, headers=headers)
+    assert res.status_code == status.HTTP_200_OK
+
+    todo = await todo_service.get_by_id(todo.id)
+    assert not todo.is_completed

@@ -1,5 +1,5 @@
-{% macro render(todo) %}
-        <div>
+{% macro render(todo, url_for) %}
+        <div id="todo-detail-{{ todo.id }}">
             <h2>{{ todo.name }}</h2>
 
             <div>{{ todo.description or "" }}</div>
@@ -25,9 +25,17 @@
                     {% if todo.completed_at %}
                     <span>완료일시</span>
                     <span>{{ todo.completed_at.strftime('%Y-%m-%d %H:%I') }}</span>
-                    <button type="button">완료 취소하기</button>
+                    <button
+                        hx-delete="{{ url_for('unset-todo-completed', pk=todo.id) }}"
+                        hx-swap="innerHTML"
+                        hx-target="#todo-detail-{{ todo.id }}"
+                        type="button">완료 취소하기</button>
                     {% else %}
-                    <button type="button">완료하기</button>
+                    <button
+                        hx-post="{{ url_for('set-todo-completed', pk=todo.id) }}"
+                        hx-swap="innerHTML"
+                        hx-target="#todo-detail-{{ todo.id }}"
+                        type="button">완료하기</button>
                     <button type="button">작업 취소하기</button>
                     {% endif %}
                 </li>

@@ -35,3 +35,12 @@ async def todo_group2(todo_group_service: TodoGroupService, valid_user: User) ->
     group = await todo_group_service.create(valid_user.id, payload)
     return group
 
+
+@pytest.fixture()
+async def not_completed_todo(todo_group: TodoGroup, todo_service: TodoService):
+    payload = TodoCreateSchema.model_validate({
+        "name": f"Not completed Todo for {todo_group.name}",
+        "group_id": todo_group.id,
+    })
+    return await todo_service.create(payload)
+
