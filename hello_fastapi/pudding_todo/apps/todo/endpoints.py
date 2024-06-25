@@ -1,4 +1,5 @@
 from datetime import datetime, UTC
+from typing import Optional, Literal
 
 from fastapi import APIRouter, status, HTTPException
 
@@ -67,12 +68,22 @@ async def list_todo(
     user: CurrentUserDep,
     service: TodoServiceDep,
     todo_group_service: TodoGroupServiceDep,
+    status: Optional[Literal["all", "completed", "incompleted"]] = None,
 ) -> dict:
     todo_group = await todo_group_service.get_users_group_by_id(user.id, pk)
     if not todo_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group not found")
     
-    todos = await service.findall(user.id, group_id=pk)
+    params = {}
+    match status:
+        case "completed":
+            params["is_completed"] = True
+        case "incompleted":
+            params["is_completed"] = False
+        case _:
+            params = {}
+    
+    todos = await service.findall(user.id, group_id=pk, **params)
     ctx = {
         "todo_group": todo_group,
         "todos": todos,

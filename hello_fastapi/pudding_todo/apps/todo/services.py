@@ -3,7 +3,7 @@ from typing import Optional, Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from sqlmodel import select, func
+from sqlmodel import select, func, null
 
 from pudding_todo.db import DbSessionDep
 from pudding_todo.exceptions import DuplicatedError
@@ -31,7 +31,7 @@ class TodoGroupService:
     async def get_users_group_by_id(self, user_id: int, group_id: int) -> TodoGroup | None:
         stmt = select(TodoGroup).where(TodoGroup.user_id == user_id, TodoGroup.id == group_id)
         result = await self.session.execute(stmt)
-        return result.one_or_none()
+        return result.scalar_one_or_none()
 
     async def get_by_id(self, group_id: int) -> TodoGroup | None:
         stmt = select(TodoGroup).where(TodoGroup.id == group_id)
@@ -63,6 +63,7 @@ class TodoService:
             group_id: Optional[int] = None,
             offset: int = 0,
             limit: int = 10,
+            is_completed: Optional[bool] = None,
         ) -> Sequence[Todo]:
         stmt = (
             select(Todo)
@@ -71,8 +72,15 @@ class TodoService:
             .offset(offset)
             .limit(limit)
         )
+
         if group_id:
             stmt = stmt.where(Todo.group_id == group_id)
+
+        if is_completed is True:
+            stmt = stmt.where(Todo.completed_at.isnot(null()))
+        elif is_completed is False:
+            stmt = stmt.where(Todo.completed_at.is_(null()))
+
         result = await self.session.execute(stmt)
         return result.unique().scalars().all()
 

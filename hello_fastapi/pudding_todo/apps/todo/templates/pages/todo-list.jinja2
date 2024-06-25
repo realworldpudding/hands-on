@@ -5,6 +5,13 @@
 {% block content %}
     <div>
         <h1>{{ todo_group.name }} 그룹함</h1>
+
+        <nav>
+            <a href="?status=all">전체</a>
+            <a href="?status=completed">완료한 일만</a>
+            <a href="?status=incompleted">완료하지 않은 일만</a>
+        </nav>
+
         {% for todo in todos %}
             {{ todo_detail.render(todo, request.url_for) }}
         {% endfor %}
