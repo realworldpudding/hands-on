@@ -1,8 +1,10 @@
 from typing import Optional, TYPE_CHECKING
 from datetime import datetime, UTC
+
 from pydantic import AwareDatetime
-from sqlmodel import Field, SQLModel, Text, func, Relationship, UniqueConstraint
-from sqlmodel.main import declared_attr
+from sqlmodel import Field, SQLModel, Text, func, Relationship, UniqueConstraint, null
+from sqlmodel.main import declared_attr, SQLModelConfig
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utc import UtcDateTime
 
 if TYPE_CHECKING:
@@ -90,6 +92,14 @@ class Todo(SQLModel, table=True):
         sa_type=UtcDateTime,
     )
 
-    @property
+    model_config = SQLModelConfig(
+        ignored_types=(hybrid_property,),
+    )
+
+    @hybrid_property
     def is_completed(self) -> bool:
         return self.completed_at is not None
+
+    @is_completed.expression
+    def is_completed(cls) -> bool:
+        return cls.completed_at.isnot(null())

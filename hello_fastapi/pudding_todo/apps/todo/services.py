@@ -76,10 +76,13 @@ class TodoService:
         if group_id:
             stmt = stmt.where(Todo.group_id == group_id)
 
-        if is_completed is True:
-            stmt = stmt.where(Todo.completed_at.isnot(null()))
-        elif is_completed is False:
-            stmt = stmt.where(Todo.completed_at.is_(null()))
+        if is_completed is not None:
+            stmt = stmt.where(Todo.is_completed.is_(is_completed))
+        # 또는 다음과 같이 사용할 수도 있습니다.
+        # if is_completed is True:
+        #     stmt = stmt.where(Todo.is_completed)
+        # elif is_completed is False:
+        #     stmt = stmt.where(~Todo.is_completed)
 
         result = await self.session.execute(stmt)
         return result.unique().scalars().all()
