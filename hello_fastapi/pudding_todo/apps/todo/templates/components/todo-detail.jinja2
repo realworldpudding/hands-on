@@ -1,3 +1,5 @@
+{% import "components/attachment.jinja2" as attachment_detail %}
+
 {% macro render(todo, url_for) %}
         <div id="todo-detail-{{ todo.id }}">
             <h2>{{ todo.name }}</h2>
@@ -46,5 +48,22 @@
                 </li>
                 {% endif %}
             </ul>
+
+            <form
+              hx-post="{{ url_for('add-attachment-to-todo', pk=todo.id) }}"
+              hx-trigger="submit"
+              hx-target="#todo-attachment-list-{{ todo.id }}"
+              hx-swap="beforeend"
+              hx-encoding="multipart/form-data"
+              enctype="multipart/form-data"
+            >
+                <input type="file" name="upload_file">
+                <button type="submit">첨부파일 추가</button>
+            </form>
+            <div id="todo-attachment-list-{{ todo.id }}">
+                {% for attachment in todo.attachments %}
+                    {{ attachment_detail.render(attachment) }}
+                {% endfor %}
+            </div>
         </div>
 {% endmacro %}

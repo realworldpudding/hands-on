@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from pudding_todo.apps.account.router import router as account_router
 from pudding_todo.apps.common.router import router as common_router
@@ -29,6 +30,11 @@ def create_app() -> FastAPI:
         tags=["auth"],
     )
 
+    app.mount(
+        "/_uploads",
+        StaticFiles(directory="_uploads"),
+        name="uploads",
+    )
     return app
 
 app = create_app()

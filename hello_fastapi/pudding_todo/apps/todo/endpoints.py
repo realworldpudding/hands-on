@@ -1,12 +1,12 @@
 from datetime import datetime, UTC
-from typing import Optional, Literal
+from typing import Optional, Literal, Annotated
 
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status, HTTPException, File, UploadFile
 
 from pudding_todo.authentication import CurrentUserDep
 from pudding_todo.templates import tpl
 
-from .deps import TodoGroupServiceDep, TodoServiceDep
+from .deps import TodoGroupServiceDep, TodoServiceDep, AttachmentServiceDep
 from .models import Todo
 from .schemas import TodoCreateSchema
 
@@ -137,3 +137,28 @@ async def unset_todo_to_completed(
         "todo": todo,
     }
     return ctx
+
+
+@router.post("/todos/{pk}/attachments", name="add-attachment-to-todo")
+@tpl.hx("partial/attachment.jinja2", no_data=True)
+async def add_attachment_to_todo(
+    pk: int,
+    user: CurrentUserDep,
+    service: TodoServiceDep,
+    attachment_service: AttachmentServiceDep,
+    upload_file: UploadFile,
+) -> dict:
+    todo = await service.get_by_id(pk)
+    if not todo or todo.group.user_id != user.id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Todo not found",
+        )
+    
+    attachment = await attachment_service.create(todo.id, upload_file)
+    
+    ctx = {
+        "attachment": attachment,
+    }
+    return ctx
+ 

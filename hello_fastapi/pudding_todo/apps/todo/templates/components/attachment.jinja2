@@ -1,0 +1,5 @@
+{% macro render(attachment) %}
+    <div id="attachment-{{ attachment.id }}">
+        <a href="/{{ attachment.file.path }}">{{ attachment.file.name }}</a>
+    </div>
+{% endmacro %}
