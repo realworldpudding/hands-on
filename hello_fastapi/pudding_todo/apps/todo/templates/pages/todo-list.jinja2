@@ -1,6 +1,7 @@
 {% extends "layout.jinja2" %}
 
 {% import 'components/todo-detail.jinja2' as todo_detail %}
+{% import 'components/form-create-todo.jinja2' as form_create_todo %}
 
 {% block content %}
     <div>
@@ -12,8 +13,12 @@
             <a href="?status=incompleted">완료하지 않은 일만</a>
         </nav>
 
+        {{ form_create_todo.render(todo_group, request.url_for) }}
+
+        <div id="todo-list">
         {% for todo in todos %}
             {{ todo_detail.render(todo, request.url_for) }}
         {% endfor %}
+        </div>
     </div>
 {% endblock %}

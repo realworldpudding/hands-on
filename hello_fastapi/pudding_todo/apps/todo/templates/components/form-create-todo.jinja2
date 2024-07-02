@@ -1,0 +1,24 @@
+{% macro render(todo_group, url_for) %}
+<form
+    hx-post="{{ url_for('create-todo') }}"
+    hx-target="#todo-list"
+    hx-swap="afterbegin"
+    hx-ext="json-enc"
+>
+    <input type="hidden" name="group_id" value="{{ todo_group.id }}">
+    <div>
+        <label for="input-name">할 일 이름</label>
+        <input type="text" id="input-name" name="name" required>
+    </div>
+    <div>
+        <label for="input-duedate-at">마감일시</label>
+        <input type="datetime" id="input-duedate-at" name="duedate_at">
+    </div>
+    <div>
+        <textarea name="description"></textarea>
+    </div>
+    <div>
+        <button type="submit">할 일 저장</button>
+    </div>
+</form>
+{% endmacro %}
