@@ -2,10 +2,12 @@ from typing import Optional, TYPE_CHECKING
 from datetime import datetime, UTC
 
 from pydantic import AwareDatetime
-from sqlmodel import Field, SQLModel, Text, func, Relationship, UniqueConstraint, null
+from sqlmodel import Field, SQLModel, Text, func, Relationship, UniqueConstraint, null, Column
 from sqlmodel.main import declared_attr, SQLModelConfig
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utc import UtcDateTime
+from fastapi_storages import StorageFile, FileSystemStorage
+from fastapi_storages.integrations.sqlalchemy import FileType
 
 if TYPE_CHECKING:
     from pudding_todo.apps.account.models import User
@@ -92,6 +94,11 @@ class Todo(SQLModel, table=True):
         sa_type=UtcDateTime,
     )
 
+    attachments: list["Attachment"] = Relationship(
+        back_populates="todo",
+        sa_relationship_kwargs={"lazy": "selectin"},
+    )
+
     model_config = SQLModelConfig(
         ignored_types=(hybrid_property,),
     )
@@ -103,3 +110,25 @@ class Todo(SQLModel, table=True):
     @is_completed.expression
     def is_completed(cls) -> bool:
         return cls.completed_at.isnot(null())
+
+
+class Attachment(SQLModel, table=True):
+    id: int = Field(
+        primary_key=True,
+        nullable=False,
+        sa_column_kwargs={"autoincrement": True},
+    )
+    todo_id: int = Field(nullable=False, foreign_key=f"{Todo.__tablename__}.id")
+    todo: Todo = Relationship(
+        back_populates="attachments",
+        sa_relationship_kwargs={"lazy": "selectin"},
+    )
+    file: StorageFile = Field(
+        sa_column=Column(
+            FileType(storage=FileSystemStorage(path="_uploads")),
+        ),
+    )
+
+    model_config = SQLModelConfig(
+        arbitrary_types_allowed=True,
+    )
