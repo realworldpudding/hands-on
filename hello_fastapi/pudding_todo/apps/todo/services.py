@@ -1,15 +1,16 @@
 from datetime import datetime
 from typing import Optional, Sequence
 
+from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from sqlmodel import select, func, null
+from sqlmodel import select, func
 
 from pudding_todo.db import DbSessionDep
 from pudding_todo.exceptions import DuplicatedError
 
 from ...exceptions import PermissionDenidedError
-from .models import Todo, TodoGroup
+from .models import Todo, TodoGroup, Attachment
 from .schemas import TodoGroupCreateSchema, TodoCreateSchema
 
 
@@ -71,6 +72,7 @@ class TodoService:
             .where(TodoGroup.user_id == user_id)
             .offset(offset)
             .limit(limit)
+            .order_by(Todo.updated_at.desc())
         )
 
         if group_id:
@@ -113,4 +115,18 @@ class TodoService:
         await self.session.commit()
         await self.session.refresh(todo)
         return todo
-   
+
+
+class AttachmentService: 
+    session: AsyncSession
+
+    def __init__(self, session: DbSessionDep):
+        self.session = session
+
+    async def create(self, todo_id: int, file: UploadFile) -> Attachment:
+        attachment = Attachment(todo_id=todo_id, file=file)
+        self.session.add(attachment)
+        await self.session.commit()
+        await self.session.refresh(attachment)
+        return attachment
+ 
