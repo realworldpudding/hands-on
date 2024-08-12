@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function Subscription() {
+function Subscription({ buttonLabel }) {
   const [email, setEmail] = useState("")
   return (
     <>
@@ -11,7 +11,7 @@ function Subscription() {
         onChange={(e) => setEmail(e.target.value)}
         className={['email-input', email ? 'email-input--entered' : '']}
       />
-      <button>구독하기</button>
+      <button>{buttonLabel}</button>
     </>
   )
 }
