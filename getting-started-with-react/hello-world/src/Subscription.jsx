@@ -1,7 +1,12 @@
 import { useState } from 'react';
 
-function Subscription({ buttonLabel }) {
+function Subscription({ buttonLabel, onSubscribe }) {
   const [email, setEmail] = useState("")
+
+  const handleSubmit = () => {
+    onSubscribe(email);
+  }
+
   return (
     <>
       <input
@@ -9,9 +14,8 @@ function Subscription({ buttonLabel }) {
         placeholder="이메일 주소를 입력해주세요"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className={['email-input', email ? 'email-input--entered' : '']}
       />
-      <button>{buttonLabel}</button>
+      <button onClick={handleSubmit}>{buttonLabel}</button>
     </>
   )
 }
