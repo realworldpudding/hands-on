@@ -24,20 +24,18 @@ const posts = [
     { id: 20, title: '기능과 UI를 분리하는 Headless Component 이야기', url: 'https://puddingcamp.com/topic/headless-component-in-puddingcamp' },
     { id: 10, title: '맥OS에서 지셸(zsh, Z Shell) 시작하기 [연재 완료]', url: 'https://puddingcamp.com/topic/hello-zsh-on-macos' },
     { id: 1, title: 'Visual Studio Code 입문 과정 [연재 완료]', url: 'https://puddingcamp.com/topic/vscode-beginner' },
-]
+];
 
 function ContentList() {
   return (
     <div>
-      <div>
-        <h2><a href={posts[0].url}>{posts[0].title}</a></h2>
-      </div>
-      <div>
-        <h2><a href={posts[1].url}>{posts[1].title}</a></h2>
-      </div>
-      <div>
-        <h2><a href={posts[2].url}>{posts[2].title}</a></h2>
-      </div>
+      {
+        posts.map((post) => (
+          <div key={post.id}>
+            <h2><a href={post.url}>{post.title}</a></h2>
+          </div>
+        ))
+      }
     </div>
   )
 }
