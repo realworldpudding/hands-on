@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 const posts = [
     { id: 240, title: '이력서를 읽긴 읽은 걸까요?', url: 'https://puddingcamp.com/topic/did-they-even-read-my-resume' },
     { id: 230, title: 'React에 입문하기', url: 'https://puddingcamp.com/topic/getting-started-with-react' },
@@ -26,11 +28,17 @@ const posts = [
     { id: 1, title: 'Visual Studio Code 입문 과정 [연재 완료]', url: 'https://puddingcamp.com/topic/vscode-beginner' },
 ];
 
+const perPage = 5;
+
 function ContentList() {
+  const page = 1;
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+  
   return (
     <div>
       {
-        posts.map((post) => (
+        posts.slice(start, end).map((post) => (
           <div key={post.id}>
             <h2><a href={post.url}>{post.title}</a></h2>
           </div>
