@@ -31,20 +31,33 @@ const posts = [
 const perPage = 5;
 
 function ContentList() {
-  const page = 1;
+  const [page, setPage] = useState(1);
   const start = (page - 1) * perPage;
   const end = start + perPage;
   
   return (
     <div>
-      {
-        posts.slice(start, end).map((post) => (
-          <div key={post.id}>
-            <h2><a href={post.url}>{post.title}</a></h2>
-          </div>
-        ))
-      }
-    </div>
+      <div>
+        {
+          posts.slice(start, end).map((post) => (
+            <div key={post.id}>
+              <h2><a href={post.url}>{post.title}</a></h2>
+            </div>
+          ))
+        }
+      </div>
+
+      <div>
+        {
+            Array.from({ length: Math.ceil(posts.length / perPage) }, (_, index) => (
+                <button
+                  key={index}
+                  disabled={page === index + 1}
+                  onClick={() => setPage(index + 1)}>{index + 1}</button>
+            ))
+        }
+      </div>
+  </div>
   )
 }
 
