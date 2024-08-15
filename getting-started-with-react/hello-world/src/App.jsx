@@ -1,5 +1,6 @@
 import './App.css';
 
+import ContentList from './ContentList';
 import Subscription from './Subscription';
 
 function App() {
@@ -23,6 +24,8 @@ function App() {
           </>
         )}
       </Subscription>
+      
+      <ContentList />
     </div>
   )
 }
