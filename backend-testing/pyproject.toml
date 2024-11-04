@@ -45,6 +45,9 @@ addopts = """
     --cov-report=xml:coverage.xml
     --cov-report=html:coverage_html
 """
+pythonpath = [
+    "./src",
+]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]

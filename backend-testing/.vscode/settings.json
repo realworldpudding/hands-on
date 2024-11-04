@@ -1,0 +1,75 @@
+{
+  "python.defaultInterpreterPath": "./.venv/bin/python",
+  "python.testing.cwd": "./",
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestPath": "./.venv/bin/pytest",
+  "python.testing.pytestArgs": [
+    "tests"
+  ],
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.indexing": true,
+  "python.analysis.completeFunctionParens": true,
+  "python.analysis.autoSearchPaths": true,
+  "python.analysis.useLibraryCodeForTypes": true,
+  "python.analysis.typeCheckingMode": "off",
+  "python.analysis.packageIndexDepths": [
+    {
+      "name": "sklearn",
+      "depth": 2
+    },
+    {
+      "name": "matplotlib",
+      "depth": 2
+    },
+    {
+      "name": "scipy",
+      "depth": 2
+    },
+    {
+      "name": "django",
+      "depth": 2
+    },
+    {
+      "name": "flask",
+      "depth": 2
+    },
+    {
+      "name": "fastapi",
+      "depth": 2
+    }
+  ],
+  "python.analysis.include": [
+    "./src"
+  ],
+  "python.analysis.extraPaths": [
+    "."
+  ],
+  "python.autoComplete.extraPaths": [
+    "./src"
+  ],
+  "python.terminal.activateEnvironment": true,
+  "testExplorer.useNativeTesting": true,
+  "editor.tabSize": 4,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.idea": true,
+    "**/.mypy_cache": true,
+    "**/.pytest_cache": true,
+    ".vscode": true,
+    ".venv": true
+  },
+  "filewatcher.commands": [
+    {
+      "match": "\\.py",
+      "isAsync": true,
+      "cmd": "cd ${workspaceRoot} && ./.venv/bin/poetry run ruff check --fix ${file} --config pyproject.toml",
+      "event": "onFileChange"
+    }
+  ],
+  "editor.lineNumbers": "relative",
+
+  "extensions.experimental.affinity": {
+    "vscodevim.vim": 1
+  },
+}
