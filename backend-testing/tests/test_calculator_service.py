@@ -5,6 +5,7 @@ from src.backend_testing.calculator_repository import (
     OperationType
 )
 
+
 @pytest.fixture
 async def calculator():
     repository = CalculatorRepository()
@@ -13,9 +14,9 @@ async def calculator():
     await calculator.clear()
 
 
-async def test_basic_operations(calculator):
-    """기본 연산 테스트"""
-    test_cases = [
+@pytest.mark.parametrize(
+    "inputs, expected",
+    [
         # (입력값들, 예상 결과)
         ([2, OperationType.ADD, 3], 5),
         ([5, OperationType.SUBTRACT, 2], 3),
@@ -23,16 +24,18 @@ async def test_basic_operations(calculator):
         ([8, OperationType.DIVIDE, 2], 4),
         ([2, OperationType.POWER, 3], 8)
     ]
-    
-    for inputs, expected in test_cases:
-        await calculator.clear()
-        for value in inputs:
-            await calculator.add_input(value)
-        result = await calculator.calculate()
-        assert result == expected
+)
+async def test_basic_operations(calculator: CalculatorRepository, inputs, expected):
+    """기본 연산 테스트"""
+
+    await calculator.clear()
+    for value in inputs:
+        await calculator.add_input(value)
+    result = await calculator.calculate()
+    assert result == expected
 
 
-async def test_operator_precedence(calculator):
+async def test_operator_precedence(calculator: CalculatorRepository):
     """연산자 우선순위 테스트"""
     # 2 + 3 * 4 = 14 (곱셈 먼저)
     inputs = [2, OperationType.ADD, 3, OperationType.MULTIPLY, 4]
@@ -42,7 +45,7 @@ async def test_operator_precedence(calculator):
     assert result == 14
 
 
-async def test_parentheses(calculator):
+async def test_parentheses(calculator: CalculatorRepository):
     """괄호 연산 테스트"""
     # (2 + 3) * 4 = 20
     inputs = [
@@ -55,7 +58,7 @@ async def test_parentheses(calculator):
     assert result == 20
 
 
-async def test_complex_calculation(calculator):
+async def test_complex_calculation(calculator: CalculatorRepository):
     """복잡한 수식 테스트"""
     # (2 + 3) * 4 - 5 ^ 2 = -5
     inputs = [
@@ -70,7 +73,7 @@ async def test_complex_calculation(calculator):
     assert result == -5
 
 
-async def test_error_handling(calculator):
+async def test_error_handling(calculator: CalculatorRepository):
     """에러 처리 테스트"""
     # 0으로 나누기
     await calculator.add_input(5)
@@ -81,14 +84,14 @@ async def test_error_handling(calculator):
         await calculator.calculate()
 
 
-async def test_invalid_input(calculator):
+async def test_invalid_input(calculator: CalculatorRepository):
     """잘못된 입력 테스트"""
     # 잘못된 문자열 입력
     with pytest.raises(ValueError, match="인식할 수 없는 입력값입니다:"):
         await calculator.add_input("x")
 
 
-async def test_calculation_history(calculator):
+async def test_calculation_history(calculator: CalculatorRepository):
     """계산 히스토리 테스트"""
     # 첫 번째 계산: 2 + 3 = 5
     await calculator.add_input(2)
@@ -111,7 +114,7 @@ async def test_calculation_history(calculator):
     assert history[1].result == 8
 
 
-async def test_clear(calculator):
+async def test_clear(calculator: CalculatorRepository):
     """초기화 테스트"""
     await calculator.add_input(2)
     await calculator.add_input(OperationType.ADD)
