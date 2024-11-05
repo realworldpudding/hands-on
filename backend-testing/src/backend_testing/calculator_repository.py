@@ -1,9 +1,9 @@
 from enum import Enum
-from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Optional, Union
 import asyncio
 
+from pydantic import BaseModel, AwareDatetime
 
 class OperationType(Enum):
     ADD = "add"
@@ -16,12 +16,11 @@ class OperationType(Enum):
     RIGHT_PAREN = ")"
 
 
-@dataclass
-class CalculationRecord:
+class CalculationRecord(BaseModel):
     """계산 기록을 저장하는 데이터 클래스"""
     inputs: list[Union[float, OperationType, str]]
     result: float
-    timestamp: datetime
+    timestamp: AwareDatetime
     error: Optional[str] = None
 
 
@@ -45,7 +44,7 @@ class CalculatorRepository:
             record = CalculationRecord(
                 inputs=inputs.copy(),
                 result=result,
-                timestamp=datetime.now(),
+                timestamp=datetime.now(tz=UTC),
                 error=error
             )
             self._records.append(record)
