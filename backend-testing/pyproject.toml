@@ -1,84 +1,20 @@
-[project]
-name = "backend-testing"
-version = "0.1.0"
-description = "Backend testing project with pytest"
-authors = [
-    {name = "Hannal", email = "hannal@puddingcamp.com"}
-]
-requires-python = ">=3.13"
-dependencies = [
-    "fastapi>=0.104.0",
-]
-
-[project.optional-dependencies]
-test = [
-    "pytest>=7.4.0",
-    "pytest-asyncio>=0.21.0",  # 비동기 테스트 지원
-    "pytest-cov>=4.1.0",       # 코드 커버리지
-    "pytest-xdist>=3.3.0",     # 병렬 테스트 실행
-    "httpx>=0.25.0",           # 비동기 HTTP 클라이언트 (테스트용)
-    "asynctest>=0.13.0",       # 비동기 테스트 유틸리티
-]
-dev = [
-    "ruff>=0.1.0",
-]
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-# 또는 src 레이아웃을 사용하는 경우:
-[tool.hatch.build]
-artifacts = ["src/backend_testing/*.py"]
-packages = ["src/backend_testing"]
+[project]
+name = "backend_testing"
+version = "0.1.0"
+authors = [
+    { name = "Your Name" },
+]
+description = "A simple calculator with tests"
+requires-python = ">=3.8"
+dependencies = [
+    "pytest",
+]
 
-# 소스 디렉토리 지정
-[tool.hatch]
-packages = ["src/backend_testing"]
 [tool.pytest.ini_options]
-minversion = "7.0"
-addopts = """
-    -ra -q
-    --asyncio-mode=auto
-    --cov=src
-    --cov-report=term-missing
-    --cov-report=xml:coverage.xml
-    --cov-report=html:coverage_html
-"""
 pythonpath = [
-    "./src",
+    "."
 ]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_functions = ["test_*"]
-asyncio_mode = "auto"      # 자동으로 비동기 테스트 감지
-markers = [
-    "integration: marks tests as integration tests",
-    "async_api: marks tests as async API tests",
-]
-filterwarnings = [
-    "error",
-    "ignore::DeprecationWarning",
-    "ignore::UserWarning",
-]
-
-[tool.coverage.run]
-branch = true
-source = ["src"]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "if self.debug:",
-    "raise NotImplementedError",
-    "if __name__ == .__main__.:",
-    "pass",
-    "raise ImportError",
-]
-
-[tool.ruff]
-line-length = 100
-target-version = "py313"
-select = ["E", "F", "B", "I"]
-ignore = ["E501"]
