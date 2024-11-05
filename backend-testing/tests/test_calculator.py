@@ -1,5 +1,5 @@
 import pytest
-from src.backend_testing.calculator import Calculator
+from backend_testing.calculator import Calculator
 
 class TestCalculator:
     @pytest.fixture

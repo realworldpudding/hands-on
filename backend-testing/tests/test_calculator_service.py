@@ -1,6 +1,6 @@
 import pytest
-from src.backend_testing.calculator_service import CalculatorService
-from src.backend_testing.calculator_repository import (
+from backend_testing.calculator_service import CalculatorService
+from backend_testing.calculator_repository import (
     CalculatorRepository,
     OperationType
 )

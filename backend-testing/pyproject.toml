@@ -40,6 +40,7 @@ minversion = "7.0"
 addopts = """
     -ra -q
     --asyncio-mode=auto
+    --doctest-modules
     --cov=src
     --cov-report=term-missing
     --cov-report=xml:coverage.xml
@@ -48,8 +49,8 @@ addopts = """
 pythonpath = [
     "./src/backend_testing",
 ]
-testpaths = ["tests"]
-python_files = ["*", "test_*.py"]
+testpaths = ["tests", "src/backend_testing"]
+python_files = ["*.py", "test_*.py"]
 # python_functions = ["test_*"]
 asyncio_mode = "auto"      # 자동으로 비동기 테스트 감지
 markers = [

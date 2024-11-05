@@ -5,7 +5,8 @@
   "python.testing.pytestEnabled": true,
   "python.testing.pytestPath": "./.venv/bin/pytest",
   "python.testing.pytestArgs": [
-    "tests"
+    "tests",
+    "src/backend_testing"
   ],
   "python.analysis.autoImportCompletions": true,
   "python.analysis.indexing": true,

@@ -1,7 +1,7 @@
 import asyncio
 import pytest
 from datetime import datetime
-from src.backend_testing.calculator_repository import (
+from backend_testing.calculator_repository import (
     CalculatorRepository,
     OperationType,
 )
