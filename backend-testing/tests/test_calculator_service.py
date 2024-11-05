@@ -4,12 +4,17 @@ from backend_testing.calculator_repository import (
     CalculatorRepository,
     OperationType
 )
+from uuid import uuid4, UUID
+
+@pytest.fixture
+async def session_uid():
+    return uuid4()
 
 
 @pytest.fixture
-async def calculator():
-    repository = CalculatorRepository()
-    calculator = CalculatorService(repository)
+async def calculator(session_uid: UUID):
+    calculator = CalculatorService()
+    calculator.set_session_uid(session_uid)
     yield calculator
     await calculator.clear()
 
@@ -25,7 +30,7 @@ async def calculator():
         ([2, OperationType.POWER, 3], 8)
     ]
 )
-async def test_basic_operations(calculator: CalculatorRepository, inputs, expected):
+async def test_basic_operations(calculator: CalculatorService, inputs, expected):
     """기본 연산 테스트"""
 
     await calculator.clear()
@@ -114,7 +119,7 @@ async def test_calculation_history(calculator: CalculatorRepository):
     assert history[1].result == 8
 
 
-async def test_clear(calculator: CalculatorRepository):
+async def test_clear(calculator: CalculatorService, session_uid: UUID):
     """초기화 테스트"""
     await calculator.add_input(2)
     await calculator.add_input(OperationType.ADD)
@@ -123,7 +128,7 @@ async def test_clear(calculator: CalculatorRepository):
     await calculator.clear()
     
     # 현재 계산이 비어있는지 확인
-    assert len(calculator._current_calculation) == 0
+    assert len(calculator._current_calculation[session_uid]) == 0
     
     # 새로운 계산이 가능한지 확인
     await calculator.add_input(4)

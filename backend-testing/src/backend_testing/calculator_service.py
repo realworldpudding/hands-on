@@ -1,36 +1,57 @@
-from enum import Enum
+from uuid import UUID
 from typing import List, Union
+from collections import defaultdict
 from .calculator_repository import CalculatorRepository, CalculationRecord, OperationType
 
 
+
 class CalculatorService:
-    def __init__(self, repository: CalculatorRepository):
-        self._repository = repository
-        self._current_calculation: List[Union[float, OperationType, str]] = []
+    _repositories: dict[UUID, CalculatorRepository]
+    _current_calculation: dict[UUID, list[Union[float, OperationType, str]]]
+
+    def __init__(self):
+        self._current_session_uid: UUID | None = None
+        self._repositories = defaultdict(CalculatorRepository)
+        self._current_calculation = defaultdict(list)
+
+    def set_session_uid(self, session_uid: UUID) -> None:
+        self._current_session_uid = session_uid
 
     async def add_input(self, value: Union[float, OperationType, str]) -> None:
         """계산기에 새로운 입력을 추가합니다."""
+
+        if self._current_session_uid is None:
+            raise ValueError("세션 ID가 설정되지 않았습니다.")
+
         if isinstance(value, str):
             if value not in ["(", ")"]:
                 raise ValueError(f"인식할 수 없는 입력값입니다: {value}")
-        self._current_calculation.append(value)
-        await self._repository.add_to_current(value)
+        self._current_calculation[self._current_session_uid].append(value)
+        await self._repositories[self._current_session_uid].add_to_current(value)
 
     async def calculate(self) -> float:
         """현재까지의 입력을 계산하고 결과를 반환합니다."""
+
+        if self._current_session_uid is None:
+            raise ValueError("세션 ID가 설정되지 않았습니다.")
+        
         if not self._current_calculation:
             return 0.0
 
         result = await self._process_calculation()
-        await self._repository.save_calculation(self._current_calculation, result)
-        self._current_calculation.clear()
+        await self._repositories[self._current_session_uid].save_calculation(self._current_calculation[self._current_session_uid], result)
+        self._current_calculation[self._current_session_uid].clear()
         return result
 
     async def _process_calculation(self) -> float:
         """입력된 수식을 계산합니다."""
-        tokens = self._current_calculation
-        if not tokens or (not isinstance(tokens[0], (int, float)) and tokens[0] != OperationType.LEFT_PAREN.value):
-            raise ValueError("첫 번째 입력값은 숫자 또는 여는 괄호여야 합니다.")
+
+        if self._current_session_uid is None:
+            raise ValueError("세션 ID가 설정되지 않았습니다.")
+
+        tokens = self._current_calculation[self._current_session_uid]
+        if not tokens or (not isinstance(tokens[0], (int, float)) and tokens[0] not in [OperationType.LEFT_PAREN, OperationType.LEFT_PAREN.value]):
+            raise ValueError(f"첫 번째 입력값은 숫자 또는 여는 괄호여야 합니다: tl {tokens[0]}")
 
         # 연산자 우선순위 정의
         precedence = {
@@ -108,9 +129,18 @@ class CalculatorService:
 
     async def clear(self) -> None:
         """현재 계산을 초기화합니다."""
-        self._current_calculation.clear()
-        await self._repository.clear_current()
+
+        if self._current_session_uid is None:
+            raise ValueError("세션 ID가 설정되지 않았습니다.")
+
+        self._current_calculation[self._current_session_uid].clear()
+        await self._repositories[self._current_session_uid].clear_current()
 
     async def get_history(self) -> List[CalculationRecord]:
         """계산 히스토리를 반환합니다."""
-        return await self._repository.get_all_records()
+
+        if self._current_session_uid is None:
+            raise ValueError("세션 ID가 설정되지 않았습니다.")
+        
+        return await self._repositories[self._current_session_uid].get_all_records()
+    

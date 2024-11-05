@@ -1,3 +1,4 @@
+from uuid import uuid4, UUID
 import asyncio
 import pytest
 from datetime import datetime
@@ -5,6 +6,7 @@ from backend_testing.calculator_repository import (
     CalculatorRepository,
     OperationType,
 )
+
 
 @pytest.fixture
 async def repository():
@@ -67,6 +69,7 @@ async def test_clear_current(repository: CalculatorRepository):
         assert len(repository._current_calculation) == 0
 
 
+@pytest.mark.asyncio
 async def test_clear_all(repository: CalculatorRepository):
     """모든 기록 초기화 테스트"""
     # 현재 계산에 값 추가
