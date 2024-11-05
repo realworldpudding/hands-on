@@ -136,11 +136,18 @@ class CalculatorService:
         self._current_calculation[self._current_session_uid].clear()
         await self._repositories[self._current_session_uid].clear_current()
 
-    async def get_history(self) -> List[CalculationRecord]:
+    async def get_history(self) -> list[CalculationRecord]:
         """계산 히스토리를 반환합니다."""
 
         if self._current_session_uid is None:
             raise ValueError("세션 ID가 설정되지 않았습니다.")
         
         return await self._repositories[self._current_session_uid].get_all_records()
-    
+
+    async def get_current_calculation(self) -> list[Union[float, OperationType, str]]:
+        """현재 계산 상태를 반환합니다."""
+
+        if self._current_session_uid is None:
+            raise ValueError("세션 ID가 설정되지 않았습니다.")
+
+        return await self._repositories[self._current_session_uid].get_all_current_calculation()

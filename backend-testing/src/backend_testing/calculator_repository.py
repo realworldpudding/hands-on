@@ -64,3 +64,8 @@ class CalculatorRepository:
         async with self._lock:
             self._records.clear()
             self._current_calculation.clear()
+
+    async def get_all_current_calculation(self) -> list[Union[float, OperationType, str]]:
+        """현재 진행 중인 계산을 반환합니다."""
+        async with self._lock:
+            return self._current_calculation.copy()
