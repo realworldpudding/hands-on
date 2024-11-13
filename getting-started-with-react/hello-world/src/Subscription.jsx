@@ -14,7 +14,10 @@ function Subscription({ buttonLabel, onSubscribe, children }) {
         type="text"
         placeholder="이메일 주소를 입력해주세요"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e) => {
+          setEmail(e.target.value);
+          console.log(email);
+        }}
       />
       <button onClick={handleSubmit}>{buttonLabel}</button>
     </>
