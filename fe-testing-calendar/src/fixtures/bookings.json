@@ -1,0 +1,56 @@
+{
+  "2024": {
+    "11": [
+      {
+        "uid": "booking-1",
+        "when": "2024-11-15",
+        "price": {
+          "amount": 10000,
+          "currency": "KRW"
+        },
+        "timeslot": {
+          "uid": "timeslot-1"
+        }
+      },
+      {
+        "uid": "booking-2",
+        "when": "2024-11-20",
+        "price": {
+          "amount": 15000,
+          "currency": "KRW"
+        },
+        "timeslot": {
+          "uid": "timeslot-2"
+        }
+      }
+    ],
+    "12": [
+      {
+        "uid": "booking-3",
+        "when": "2024-12-25",
+        "price": {
+          "amount": 12000,
+          "currency": "KRW"
+        },
+        "timeslot": {
+          "uid": "timeslot-3"
+        }
+      }
+    ]
+  },
+  "2025": {
+    "1": [
+      {
+        "uid": "booking-4",
+        "when": "2025-01-01",
+        "price": {
+          "amount": 20000,
+          "currency": "KRW"
+        },
+        "timeslot": {
+          "uid": "timeslot-4"
+        }
+      }
+    ]
+  }
+} 
