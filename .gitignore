@@ -687,4 +687,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+__screenshots__/
+
+.vite/
+
 # End of https://www.toptal.com/developers/gitignore/api/python,node,visualstudiocode,windows,macos,linux,react,vim,direnv,dotenv,svelte,vue,jetbrains,jetbrains+all,jetbrains+iml
