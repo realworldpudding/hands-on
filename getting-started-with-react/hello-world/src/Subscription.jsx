@@ -17,7 +17,7 @@ function Subscription({ buttonLabel, onSubscribe, children }) {
     }, 5000);
 
     return () => clearInterval(tid);
-  }, []);
+  }, [email]);
   
   return (
     <>
@@ -30,10 +30,9 @@ function Subscription({ buttonLabel, onSubscribe, children }) {
         onChange={(e) => {
           const newValue = e.target.value;
           setEmail(newValue);
-          console.log(newValue);
         }}
       />
-      <button onClick={handleSubmit}>{buttonLabel}</button>
+      <button role="button" role-label={buttonLabel} onClick={handleSubmit}>{buttonLabel}</button>
     </>
   )
 }
