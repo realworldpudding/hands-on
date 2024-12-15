@@ -9,18 +9,13 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./setupTests.js'],
-    pool: "vmThreads",
-    poolOptions: {
-      useAtomics: true,
-    },
     environmentOptions: {
       jsdom: {
         resources: 'usable',
       }
     },
     include: [
-      "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
       "src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
     ],
   },
-})
+});
