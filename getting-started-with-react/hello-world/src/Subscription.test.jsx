@@ -8,6 +8,18 @@ describe('Subscription 컴포넌트', () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
   });
 
+  test('초기 렌더링이 예상대로 이루어지는지 스냅샷으로확인한다.', () => {
+    const mockOnSubscribe = vi.fn();
+    const { container } = render(
+      <Subscription buttonLabel="구독하기" onSubscribe={mockOnSubscribe}>
+        뉴스레터 구독 안내
+      </Subscription>
+    );
+
+    // 스냅샷 테스트: container의 DOM 구조를 기록하여 비교
+    expect(container).toMatchSnapshot();
+  });
+
   test('기본 Props를 전달하면 예상한 렌더링 결과를 반환한다.', () => {
     const onSubscribe = vi.fn();
     const { container } = render(
