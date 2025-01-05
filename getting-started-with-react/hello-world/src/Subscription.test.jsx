@@ -72,14 +72,14 @@ describe('Subscription 컴포넌트', () => {
         {(title, email) => (
           <div>
             <h2>{title}</h2>
-            <p role="paragraph" role-label="현재 이메일">현재 이메일: {email}</p>
+            <p role="paragraph" aria-label="현재 이메일">현재 이메일: {email}</p>
           </div>
         )}
       </Subscription>
     );
 
     expect(container.querySelector('h2').textContent).toBe('학습과 성장 컨텐츠 소식');
-    expect(container.querySelector('p[role="paragraph"][role-label="현재 이메일"]').textContent).toBe('현재 이메일: ');
+    expect(container.querySelector('p[role="paragraph"][aria-label="현재 이메일"]').textContent).toBe('현재 이메일: ');
   });
 
   test('이메일이 비어있으면 자동으로 입력 창에 포커스를 준다.', () => {

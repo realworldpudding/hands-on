@@ -32,7 +32,7 @@ function Subscription({ buttonLabel, onSubscribe, children }) {
           setEmail(newValue);
         }}
       />
-      <button role="button" role-label={buttonLabel} onClick={handleSubmit}>{buttonLabel}</button>
+      <button role="button" aria-label={buttonLabel} onClick={handleSubmit}>{buttonLabel}</button>
     </>
   )
 }
