@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "test:update": "vitest --update"
+    "test:update": "vitest --update",
+    "test:playwright": "playwright test --ui"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -17,9 +18,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
+    "@playwright/test": "^1.49.1",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
+    "@testing-library/react-hooks": "^8.0.1",
     "@testing-library/user-event": "^14.5.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
